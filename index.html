@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Трактор-квиз — Петербургский тракторный завод</title>
+  <meta name="description" content="Трактор-квиз о Петербургском тракторном заводе и технике «КИРОВЕЦ»: 15 вопросов, результат и приз." />
+  <meta name="theme-color" content="#0a0908" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23e4002b'/%3E%3Ctext x='32' y='46' font-family='Arial,sans-serif' font-size='40' font-weight='bold' fill='white' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="cosmos" aria-hidden="true"></div>
+  <canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
+
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand__logo-plate">
+        <img class="brand__logo" src="assets/ptz-logo.png" alt="Петербургский тракторный завод" width="490" height="100" />
+      </span>
+    </div>
+    <span class="header-note" id="headerCount">15 вопросов</span>
+  </header>
+
+  <main class="site-main">
+    <!-- ============ ГЛАВНЫЙ ЭКРАН ============ -->
+    <section class="screen screen--hero is-active" id="screen-hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow__bar" aria-hidden="true"></span><span id="heroCount">15 вопросов</span> · около 6 минут</p>
+        <h1 class="hero-title">Трактор<span class="hero-title__accent">-квиз</span></h1>
+        <p class="hero-lead">Пройди викторину и выиграй приз. 15 вопросов о Петербургском тракторном заводе, людях и технике «КИРОВЕЦ».</p>
+
+        <div class="hero-actions">
+          <button class="btn btn--primary" id="startBtn" type="button">
+            Запустить двигатель <span class="btn__arrow" aria-hidden="true">→</span>
+          </button>
+        </div>
+
+      </div>
+
+      <div class="hero-visual">
+        <figure class="tractor-figure">
+          <div class="tractor-stage">
+            <div class="photo-wrap">
+              <img class="tractor-photo" src="assets/kirovets-k7m-field.jpg" alt="Трактор КИРОВЕЦ К-7М в поле" width="1000" height="667" />
+              <span class="photo-sheen" aria-hidden="true"></span>
+            </div>
+            <div class="stage-meta" aria-hidden="true">
+              <span><strong>К-7М</strong> · флагман</span>
+              <span>460 л.с.</span>
+              <span>4×4</span>
+            </div>
+          </div>
+          <figcaption class="stage-caption">Сельскохозяйственный трактор общего назначения, полноприводный, шарнирно-сочлененная рама</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ ЗНАКОМСТВО ============ -->
+    <section class="screen screen--intro" id="screen-intro" hidden>
+      <div class="card card--intro">
+        <p class="eyebrow"><span class="eyebrow__bar" aria-hidden="true"></span>Шаг 1 из 2</p>
+        <h2 class="intro-title">Кто за рулём?</h2>
+        <p class="intro-text">Пара данных — и можно заводить. Результат и разбор ответов автоматически попадут в таблицу организатора.</p>
+
+        <form class="form" id="participantForm" novalidate>
+          <div class="field">
+            <label for="name">ФИО <span class="req" aria-hidden="true">*</span></label>
+            <input id="name" name="name" type="text" autocomplete="name" placeholder="Смирнова Анна Сергеевна" maxlength="100" required />
+            <p class="field__error" data-error-for="name" hidden>Укажи ФИО — так результат будет легко найти.</p>
+          </div>
+
+          <div class="field">
+            <label for="contact">Email или телефон <span class="req" aria-hidden="true">*</span></label>
+            <input id="contact" name="contact" type="text" inputmode="email" autocomplete="email" placeholder="anna@example.com" maxlength="120" aria-describedby="contactHint" required />
+            <p class="field__hint" id="contactHint">Чтобы организатор мог связаться с тобой.</p>
+            <p class="field__error" data-error-for="contact" hidden>Укажи email или телефон — например, anna@example.com.</p>
+          </div>
+
+          <p class="form__note">Нажимая «Запустить двигатель», ты соглашаешься на обработку персональных данных. Баллы, ответы и время прохождения сохранятся в таблице организатора.</p>
+
+          <div class="form__actions">
+            <button class="btn btn--primary" type="submit">
+              Запустить двигатель <span class="btn__arrow" aria-hidden="true">→</span>
+            </button>
+            <button class="btn btn--ghost" type="button" id="backToHero">Назад</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ КВИЗ ============ -->
+    <section class="screen screen--quiz" id="screen-quiz" hidden>
+      <div class="quiz-top">
+        <div class="quiz-meta">
+          <span id="qCounter">Вопрос 1 из 15</span>
+          <span class="quiz-meta__score" id="qScore">0 баллов</span>
+        </div>
+        <div class="progress" id="progress" role="progressbar" aria-label="Прогресс квиза" aria-valuemin="0" aria-valuemax="15" aria-valuenow="1">
+          <div class="progress__fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="card card--question">
+        <p class="q-label" id="qLabel">Вопрос 01</p>
+        <h2 class="q-title" id="questionText" tabindex="-1"></h2>
+        <div class="options" id="options"></div>
+
+        <div class="feedback" id="feedback" role="status" hidden>
+          <p class="feedback__title" id="feedbackTitle"></p>
+          <p class="feedback__text" id="feedbackText"></p>
+          <button class="btn btn--primary btn--wide" id="nextBtn" type="button">Следующий вопрос →</button>
+        </div>
+      </div>
+
+      <p class="kbd-hint">Выбирай ответ клавишами <kbd>1</kbd>–<kbd>4</kbd> · дальше — <kbd>Enter</kbd></p>
+    </section>
+
+    <!-- ============ РЕЗУЛЬТАТ ============ -->
+    <section class="screen screen--results" id="screen-results" hidden>
+      <div class="card card--result">
+        <div class="ring-wrap">
+          <svg class="ring" viewBox="0 0 180 180" aria-hidden="true">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff5c5c" />
+                <stop offset="55%" stop-color="#e4002b" />
+                <stop offset="100%" stop-color="#ffb35c" />
+              </linearGradient>
+            </defs>
+            <circle class="ring__bg" cx="90" cy="90" r="76" />
+            <circle class="ring__fg" id="ringFg" cx="90" cy="90" r="76" />
+          </svg>
+          <div class="ring-center">
+            <span class="ring-center__score" id="resultScore">0</span>
+            <span class="ring-center__total" id="resultTotal">из 15</span>
+          </div>
+        </div>
+
+        <p class="eyebrow eyebrow--center"><span class="eyebrow__bar" aria-hidden="true"></span>Твой результат</p>
+        <h2 class="result-title" id="resultTier"></h2>
+        <p class="result-text" id="resultText"></p>
+        <p class="result-best" id="resultBest"></p>
+        <p class="result-time" id="resultTime"></p>
+        <p class="save-status" id="saveStatus" role="status" hidden></p>
+
+        <div class="result-actions">
+          <button class="btn btn--primary" id="restartBtn" type="button">Пройти ещё раз</button>
+          <button class="btn btn--ghost" id="shareBtn" type="button">Поделиться результатом</button>
+        </div>
+      </div>
+
+      <div class="review">
+        <div class="review__head">
+          <h3>Разбор ответов</h3>
+          <span id="reviewSummary"></span>
+        </div>
+        <ol class="review-list" id="reviewList"></ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year">2026</span> · Квиз о Петербургском тракторном заводе</p>
+    <p class="site-footer__note">Создано отделом по работе с Университетами</p>
+  </footer>
+
+  <noscript>
+    <p class="noscript">Для прохождения квиза нужен включённый JavaScript.</p>
+  </noscript>
+
+  <script src="app.js"></script>
+</body>
+</html>
